@@ -66,12 +66,8 @@ public class ValveReportController extends BaseController {
     @RequestMapping(value = "createValve", method = {RequestMethod.POST})
     public ResponseMsg createValve(@RequestBody(required = true) Map<String, Object> valveMap) {
         UserInfo userInfo = getLoginUser();
-        Object reportNum = valveMap.get("reportNo");
-        if (reportNum == null || reportNum == ""){
-            logger.info("-------------------------1------>");
-            return ResponseMsg.error("未提交报告编号reportNo");
-        }
-        String reportNo = reportNum.toString();
+        logger.info("valveMap--->" + valveMap);
+        String reportNo = valveMap.get("reportNo").toString();
         //校验报告编号是否已经存在
         ValveReportInfo valveReportInfo = valveReportService.getValveReportByReportNo(reportNo);
         if (valveReportInfo != null) {
