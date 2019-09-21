@@ -71,7 +71,7 @@ public class ValveReportController extends BaseController {
         //校验报告编号是否已经存在
         ValveReportInfo valveReportInfo = valveReportService.getValveReportByReportNo(reportNo);
         if (valveReportInfo != null) {
-            return ResponseMsg.error("编号已存在！请重新刷新页面！");
+            return ResponseMsg.error("编号已存在, 请重新刷新页面! ");
         }
 
         //校验参数
@@ -114,7 +114,7 @@ public class ValveReportController extends BaseController {
         recordMap.put("operationType", Constant.OPERATION_TYPE_NOTIFY);
         recordService.addRecord(recordMap);
 
-        return ResponseMsg.ok("新建报告成功！");
+        return ResponseMsg.ok(reportNo);
     }
 
     @ApiOperation(value = "修改报告接口", response = ResponseMsg.class)
