@@ -29,7 +29,7 @@
         <if test="approveName!=null and approveName!=''">
             AND approveName = #{approveName,jdbcType=VARCHAR}
         </if>
-        <if test="createName!=null and createName!=''">
+        <if test="modiflyFlags == null">
             ORDER BY createTime DESC
         </if>
         <if test="modiflyFlags!=null and modiflyFlags.toString.equals('[2, 12]')">
