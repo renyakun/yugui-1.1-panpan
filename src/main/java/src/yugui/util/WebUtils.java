@@ -40,24 +40,24 @@ public final class WebUtils {
      * @param request
      * @return
      */
-    public static Map<String, Object> getBody(HttpServletRequest request) {
-        if (request instanceof BodyReaderRequestWrapper) {
-            String contentType = request.getContentType();
-            BodyReaderRequestWrapper requestWrapper = (BodyReaderRequestWrapper) request;
-            try {
-                String bodyStr = IOUtils.toString(requestWrapper.getBody(), requestWrapper.getCharacterEncoding());
-                if (!StringUtils.hasText(bodyStr)) {
-                    return Collections.emptyMap();
-                }
-                return ObjectMapperUtils.jsonToMap(bodyStr);
-            } catch (Exception e) {
-                log.error("获取body失败", e);
-                throw new BusinessException(ApiCode.NOT_READABLE, "JSON解析失败");
-            }
-        }
-        log.warn("request={}", request);
-        return Collections.emptyMap();
-    }
+//    public static Map<String, Object> getBody(HttpServletRequest request) {
+//        if (request instanceof BodyReaderRequestWrapper) {
+//            String contentType = request.getContentType();
+//            BodyReaderRequestWrapper requestWrapper = (BodyReaderRequestWrapper) request;
+//            try {
+//                String bodyStr = IOUtils.toString(requestWrapper.getBody(), requestWrapper.getCharacterEncoding());
+//                if (!StringUtils.hasText(bodyStr)) {
+//                    return Collections.emptyMap();
+//                }
+//                return ObjectMapperUtils.jsonToMap(bodyStr);
+//            } catch (Exception e) {
+//                log.error("获取body失败", e);
+//                throw new BusinessException(ApiCode.NOT_READABLE, "JSON解析失败");
+//            }
+//        }
+//        log.warn("request={}", request);
+//        return Collections.emptyMap();
+//    }
 
     /**
      * 获取url
