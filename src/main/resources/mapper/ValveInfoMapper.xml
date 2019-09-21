@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="src.yugui.mapper.ValveReportMapper">
+
+    <resultMap id="default" type="src.yugui.entity.ValveReportInfo"/>
+
+    <sql id="Base_Column_List">
+        reportNo,companyUse,companyAddress,companyContacts,telephone,deviceNo,installLocation,valveType,valveModel,workPressure,workMedium,
+        requireSettingPressure,standard,settingPressure,sealTestPressure,checkMode,checkMedium,checkResult,remarks,checkExplain,checkSignature,
+        approveSignature
+    </sql>
+
+    <select id="getValveReportByReportNo" resultMap="default">
+        SELECT <include refid="Base_Column_List"/> FROM valveinfo WHERE reportNo = #{reportNo} LIMIT 1;
+    </select>
+
+    <insert id="creatReport" parameterType="src.yugui.entity.ValveReportInfo">
+        insert into valveinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reportNo != null and reportNo!=''">
+                reportNo,
+            </if>
+            <if test="companyUse != null and companyUse!=''">
+                companyUse,
+            </if>
+            <if test="companyAddress != null and companyAddress!=''">
+                companyAddress,
+            </if>
+            <if test="companyContacts != null and companyContacts!=''">
+                companyContacts,
+            </if>
+            <if test="telephone != null and telephone!=''">
+                telephone,
+            </if>
+            <if test="deviceNo != null and deviceNo!=''">
+                deviceNo,
+            </if>
+            <if test="installLocation != null and installLocation!=''">
+                installLocation,
+            </if>
+            <if test="valveType != null and valveType!=''">
+                valveType,
+            </if>
+            <if test="valveModel != null and valveModel!=''">
+                valveModel,
+            </if>
+            <if test="workPressure != null and workPressure!=''">
+                workPressure,
+            </if>
+            <if test="workMedium != null and workMedium!=''">
+                workMedium,
+            </if>
+            <if test="requireSettingPressure != null and requireSettingPressure!=''">
+                requireSettingPressure,
+            </if>
+            <if test="standard != null and standard!=''">
+                standard,
+            </if>
+            <if test="settingPressure != null and settingPressure!=''">
+                settingPressure,
+            </if>
+            <if test="sealTestPressure != null and sealTestPressure!=''">
+                sealTestPressure,
+            </if>
+            <if test="checkMode != null and checkMode!=''">
+                checkMode,
+            </if>
+            <if test="checkMedium != null and checkMedium!=''">
+                checkMedium,
+            </if>
+            <if test="checkResult != null and checkResult!=''">
+                checkResult,
+            </if>
+            <if test="remarks != null and remarks!=''">
+                remarks,
+            </if>
+            <if test="checkExplain != null and checkExplain!=''">
+                checkExplain,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reportNo != null and reportNo!=''">
+                #{reportNo,jdbcType=VARCHAR},
+            </if>
+            <if test="companyUse != null and companyUse!=''">
+                #{companyUse,jdbcType=VARCHAR},
+            </if>
+            <if test="companyAddress != null and companyAddress!=''">
+                #{companyAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="companyContacts != null and companyContacts!=''">
+                #{companyContacts,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null and telephone!=''">
+                #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceNo != null and deviceNo!=''">
+                #{deviceNo,jdbcType=VARCHAR},
+            </if>
+            <if test="installLocation != null and installLocation!=''">
+                #{installLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="valveType != null and valveType!=''">
+                #{valveType,jdbcType=VARCHAR},
+            </if>
+            <if test="valveModel != null and valveModel!=''">
+                #{valveModel,jdbcType=VARCHAR},
+            </if>
+            <if test="workPressure != null and workPressure!=''">
+                #{workPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="workMedium != null and workMedium!=''">
+                #{workMedium,jdbcType=VARCHAR},
+            </if>
+            <if test="requireSettingPressure != null and requireSettingPressure!=''">
+                #{requireSettingPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="standard != null and standard!=''">
+                #{standard,jdbcType=VARCHAR},
+            </if>
+            <if test="settingPressure != null and settingPressure!=''">
+                #{settingPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="sealTestPressure != null and sealTestPressure!=''">
+                #{sealTestPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="checkMode != null and checkMode!=''">
+                #{checkMode,jdbcType=VARCHAR},
+            </if>
+            <if test="checkMedium != null and checkMedium!=''">
+                #{checkMedium,jdbcType=VARCHAR},
+            </if>
+            <if test="checkResult != null and checkResult!=''">
+                #{checkResult,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null and remarks!=''">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="checkExplain != null and checkExplain!=''">
+                #{checkExplain,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateValveReportInfo" parameterType="src.yugui.entity.ValveReportInfo">
+        update valveinfo
+        <set>
+            <if test="companyUse!=null and companyUse!=''">
+                companyUse = #{companyUse,jdbcType=VARCHAR},
+            </if>
+            <if test="companyAddress!=null and companyAddress!=''">
+                companyAddress = #{companyAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="companyContacts!=null and companyContacts!=''">
+                companyContacts = #{companyContacts,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone!=null and telephone!=''">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceNo!=null and deviceNo!=''">
+                deviceNo = #{deviceNo,jdbcType=VARCHAR},
+            </if>
+            <if test="installLocation!=null and installLocation!=''">
+                installLocation = #{installLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="valveType!=null and valveType!=''">
+                valveType = #{valveType,jdbcType=VARCHAR},
+            </if>
+            <if test="valveModel!=null and valveModel!=''">
+                valveModel = #{valveModel,jdbcType=VARCHAR},
+            </if>
+            <if test="workPressure!=null and workPressure!=''">
+                workPressure = #{workPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="workMedium!=null and workMedium!=''">
+                workMedium = #{workMedium,jdbcType=VARCHAR},
+            </if>
+            <if test="requireSettingPressure!=null and requireSettingPressure!=''">
+                requireSettingPressure = #{requireSettingPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="standard!=null and standard!=''">
+                standard = #{standard,jdbcType=VARCHAR},
+            </if>
+            <if test="settingPressure!=null and settingPressure!=''">
+                settingPressure = #{settingPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="sealTestPressure!=null and sealTestPressure!=''">
+                sealTestPressure = #{sealTestPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="checkMode!=null and checkMode!=''">
+                checkMode = #{checkMode,jdbcType=VARCHAR},
+            </if>
+            <if test="checkMedium!=null and checkMedium!=''">
+                checkMedium = #{checkMedium,jdbcType=VARCHAR},
+            </if>
+            <if test="checkResult!=null and checkResult!=''">
+                checkResult = #{checkResult,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks!=null and remarks!=''">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="checkExplain!=null and checkExplain!=''">
+                checkExplain = #{checkExplain,jdbcType=VARCHAR},
+            </if>
+            <if test="checkSignature!=null and checkSignature!=''">
+                checkSignature = #{checkSignature,jdbcType=VARCHAR},
+            </if>
+            <if test="approveSignature!=null and approveSignature!=''">
+                approveSignature = #{approveSignature,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where reportNo = #{reportNo,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

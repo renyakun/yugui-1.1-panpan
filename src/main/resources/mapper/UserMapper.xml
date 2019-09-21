@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="src.yugui.mapper.UserMapper">
+
+    <resultMap id="default" type="src.yugui.entity.UserInfo"/>
+
+    <select id="getUserByName" resultMap="default">
+        SELECT * FROM user WHERE user_name = #{userName,jdbcType=VARCHAR}
+        AND enable = 1
+    </select>
+
+    <select id="getUserList" resultMap="default">
+        SELECT user_name,real_name,phone,email,create_time,user_level,signature FROM user where enable = 1
+    </select>
+
+
+    <select id="getUserName" resultType="java.lang.String">
+        SELECT user_name FROM user where enable = 1
+    </select>
+
+
+    <insert id="addUser" parameterType="src.yugui.entity.UserInfo">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userPassword != null">
+                user_password,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="enable != null">
+                enable,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="loginTime != null">
+                login_time,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="userLevel != null">
+                user_level,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">
+                #{userName},
+            </if>
+            <if test="userPassword != null">
+                #{userPassword},
+            </if>
+            <if test="realName != null">
+                #{realName},
+            </if>
+            <if test="phone != null">
+                #{phone},
+            </if>
+            <if test="enable != null">
+                #{enable},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="loginTime != null">
+                #{loginTime},
+            </if>
+            <if test="email != null">
+                #{email},
+            </if>
+            <if test="userLevel != null">
+                #{userLevel},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateUser" parameterType="src.yugui.entity.UserInfo">
+        update  user
+        <set>
+            <if test="confirmPwd!=null and confirmPwd!=''">
+                user_password = #{confirmPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="phone!=null and phone!=''">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="email!=null and email!=''">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="signature!=null and signature!=''">
+                signature = #{signature,jdbcType=VARCHAR},
+            </if>
+            <if test="loginTime!=null and loginTime!=''">
+                login_time = #{loginTime,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime!=null and modifyTime!=''">
+                modify_time = #{modifyTime,jdbcType=VARCHAR},
+            </if>
+            <if test="userPassword!=null and userPassword!=''">
+                user_password = #{userPassword,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where user_name = #{userName,jdbcType=VARCHAR} and real_name = #{realName,jdbcType=VARCHAR};
+    </update>
+
+    <update id="deleteUser">
+        UPDATE user
+        SET enable = 0,
+        modify_time = #{modifyTime}
+        WHERE user_name IN (
+        <foreach collection="userNames" separator="," item="userName">
+            #{userName}
+        </foreach>
+        )
+    </update>
+
+</mapper>

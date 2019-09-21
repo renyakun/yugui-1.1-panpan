@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="src.yugui.mapper.CompanyMapper">
+
+    <resultMap id="default" type="src.yugui.entity.Company"/>
+
+    <sql id="Base_Column_List">
+        id,companyUse,companyAddress,companyContacts,telephone,createTime
+    </sql>
+
+    <select id="getCompanyByCompanyUse" resultMap="default">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM company WHERE enable = 1
+        <if test="companyUse!=null and companyUse!=''">
+            <bind name="companyName" value="'%' + companyUse + '%'"/>
+            AND companyUse like #{companyName}
+        </if>
+    </select>
+
+    <select id="getCompanyUseListByCompanyUse" resultMap="default">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM company where companyUse = #{companyUse}
+        AND enable = 1
+    </select>
+
+    <select id="getCompanyList" resultMap="default">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM company where enable = 1
+        <if test="companyUse!=null and companyUse!=''">
+            <bind name="companyName" value="'%' + companyUse + '%'"/>
+            AND companyUse like #{companyName}
+        </if>
+        <if test="companyContacts!=null and companyContacts!=''">
+            <bind name="contactsName" value="'%' + companyContacts + '%'"/>
+            AND companyContacts like #{contactsName}
+        </if>
+    </select>
+
+    <insert id="addCompany" parameterType="src.yugui.entity.Company">
+        insert into company
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyUse != null and companyUse!=''">
+                companyUse,
+            </if>
+            <if test="companyAddress != null and companyAddress!=''">
+                companyAddress,
+            </if>
+            <if test="companyContacts != null and companyContacts!=''">
+                companyContacts,
+            </if>
+            <if test="telephone != null and telephone!=''">
+                telephone,
+            </if>
+            <if test="createTime != null and createTime!=''">
+                createTime,
+            </if>
+            <if test="enable != null and createTime!=''">
+                enable,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyUse != null and companyUse!=''">
+                #{companyUse,jdbcType=VARCHAR},
+            </if>
+            <if test="companyAddress != null and companyAddress!=''">
+                #{companyAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="companyContacts != null and companyContacts!=''">
+                #{companyContacts,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null and telephone!=''">
+                #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="madeCompany != null and madeCompany!=''">
+                #{madeCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="madeLicenseNo != null and madeLicenseNo!=''">
+                #{madeLicenseNo,jdbcType=VARCHAR},
+            </if>
+            <if test="factoryTime != null and factoryTime!=''">
+                #{factoryTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null and createTime!=''">
+                #{createTime,jdbcType=INTEGER},
+            </if>
+            <if test="enable != null and createTime!=''">
+                #{enable,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="deleteCompany">
+        UPDATE company
+        SET enable = 0,
+        updateTime = #{updateTime}
+        WHERE id IN (
+        <foreach collection="companyIds" separator="," item="companyId">
+            #{companyId}
+        </foreach>
+        )
+    </update>
+
+    <update id="updateCompany" parameterType="src.yugui.entity.Company">
+        update company
+        <set>
+            <if test="companyUse != null and companyUse!=''">
+                companyUse = #{companyUse,jdbcType=VARCHAR},
+            </if>
+            <if test="companyAddress!=null and companyAddress!=''">
+                companyAddress = #{companyAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="companyContacts!=null and companyContacts!=''">
+                companyContacts = #{companyContacts,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone!=null and telephone!=''">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime!=null and updateTime!=''">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+</mapper>

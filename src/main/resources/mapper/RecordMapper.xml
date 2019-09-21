@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="src.yugui.mapper.RecordMapper">
+
+    <resultMap id="default" type="src.yugui.entity.Record"/>
+
+    <select id="getRecordList" resultMap="default">
+        SELECT * FROM record ORDER BY id DESC limit 30;
+    </select>
+
+    <select id="getRecordListOfNotify" resultMap="default">
+        SELECT * FROM record WHERE enable = 1 ORDER BY id DESC
+    </select>
+
+    <insert id="addRecord" parameterType="src.yugui.entity.Record">
+        insert into record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null and userName!=''">
+                user_name,
+            </if>
+            <if test="message != null and message!=''">
+                message,
+            </if>
+            <if test="reportNo != null and reportNo!=''">
+                reportNo,
+            </if>
+            <if test="preUser != null and preUser!=''">
+                preUser,
+            </if>
+            <if test="operationTime != null and operationTime!=''">
+                operation_time,
+            </if>
+            <if test="operationType != null and operationType!=''">
+                operationType,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null and userName!=''">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="message != null and message!=''">
+                #{message,jdbcType=VARCHAR},
+            </if>
+            <if test="reportNo != null and reportNo!=''">
+                #{reportNo,jdbcType=VARCHAR},
+            </if>
+            <if test="preUser != null and preUser!=''">
+                #{preUser,jdbcType=VARCHAR},
+            </if>
+            <if test="operationTime != null and operationTime!=''">
+                #{operationTime,jdbcType=VARCHAR},
+            </if>
+            <if test="operationType != null and operationType!=''">
+                #{operationType,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="deleteNotifyOrEvent">
+        UPDATE record SET enable = 0
+        WHERE id IN (
+        <foreach collection="notifyIds" separator="," item="notifyId">
+            #{notifyId}
+        </foreach>
+        )
+    </update>
+
+</mapper>

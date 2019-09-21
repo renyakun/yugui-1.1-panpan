@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="src.yugui.mapper.UserNotifyMapper">
+
+    <resultMap id="default" type="src.yugui.entity.UserNotify"/>
+
+    <resultMap id="result" type="src.yugui.entity.UserNotify">
+        <result column="reportNo" property="reportNo" />
+        <result column="userName" property="userName" />
+        <result column="preUser" property="preUser" />
+        <result column="flag" property="flag" />
+        <result column="createTime" property="createTime" />
+        <association property="valveHistory"  javaType="src.yugui.entity.ValveHistory" >
+            <result column="checkReason" property="checkReason" />
+            <result column="approveReason" property="approveReason" />
+        </association>
+    </resultMap>
+
+    <insert id="insertUsernotify" parameterType="src.yugui.entity.UserNotify">
+        REPLACE into usernotify (reportNo, userName, preUser, realName, flag, createTime)
+            VALUES(#{reportNo},
+                   #{userName},
+                   #{preUser},
+                   #{realName},
+                   #{flag},
+                   #{createTime}
+            )
+    </insert>
+
+    <select id="getValveNotifyList" resultMap="result">
+        SELECT a.reportNo,a.userName,a.preUser,a.flag,a.createTime,b.checkReason,b.approveReason FROM
+        usernotify a,valvehistory b WHERE a.reportNo=b.reportNo
+        <if test="reportNo!=null and reportNo!=''">
+            <bind name="reportNos" value="'%' + reportNo + '%'"/>
+            AND a.reportNo like #{reportNos}
+        </if>
+        <if test="userName!=null and userName!=''">
+            AND a.userName = #{userName}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+            AND a.createTime = #{userName}
+        </if>
+        <if test="flag != null and flag!=''">
+            AND a.flag = #{flag}
+        </if>
+        <if test="flagsArrl != null and flagsArrl.size() > 0">
+            AND a.flag IN (
+            <foreach collection="flagsArrl" separator="," item="flagsArr">
+                #{flagsArr}
+            </foreach>
+            )
+        </if>
+    </select>
+
+    <select id="getUserNotifyByUserNameAndFlag" resultMap="default">
+        SELECT * FROM usernotify WHERE
+                userName = #{userName}
+                AND flag = #{flag}
+                ORDER BY createTime DESC
+    </select>
+
+    <update id="updateUsernotify">
+        update  usernotify
+        <set>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=INTEGER},
+            </if>
+            <if test="userName!=null and userName!=''">
+                userName = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="preUser!=null and preUser!=''">
+                preUser = #{preUser,jdbcType=VARCHAR},
+            </if>
+            <if test="realName!=null and realName!=''">
+                realName = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime!=null and createTime!=''">
+                createTime = #{createTime,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where reportNo = #{reportNo};
+    </update>
+
+    <select id="getgetpreUser" resultType="java.lang.String">
+        SELECT distinct preUser FROM usernotify;
+    </select>
+
+
+</mapper>

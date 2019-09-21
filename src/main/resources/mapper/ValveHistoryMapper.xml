@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="src.yugui.mapper.ValveHistoryMapper">
+
+    <resultMap id="default" type="src.yugui.entity.ValveHistoryInfo"/>
+    <resultMap id="ValveHistoryNotify" type="src.yugui.entity.ValveHistoryNotify"/>
+
+
+    <select id="getValveHistoryInfoByReportNo" resultMap="default">
+        SELECT * FROM valvehistory WHERE reportNo = #{reportNo}
+        LIMIT 1;
+    </select>
+
+    <select id="getValHistoryList" resultMap="default">
+        SELECT * FROM valvehistory WHERE 1 = 1
+        <if test="modiflyFlags != null and modiflyFlags.size() > 0">
+            AND modifyFlag IN (
+            <foreach collection="modiflyFlags" separator="," item="flag">
+                #{flag}
+            </foreach>
+            )
+        </if>
+        <if test="createName!=null and createName!=''">
+            AND createName = #{createName,jdbcType=VARCHAR}
+        </if>
+        <if test="checkName!=null and checkName!=''">
+            AND checkName = #{checkName,jdbcType=VARCHAR}
+        </if>
+        <if test="approveName!=null and approveName!=''">
+            AND approveName = #{approveName,jdbcType=VARCHAR}
+        </if>
+        <if test="createName!=null and createName!=''">
+            ORDER BY createTime DESC
+        </if>
+        <if test="modiflyFlags!=null and modiflyFlags.toString.equals('[2, 12]')">
+            ORDER BY checkTime DESC
+        </if>
+        <if test="modiflyFlags!=null and modiflyFlags.toString.equals('[4, 14]')">
+            ORDER BY approveTime DESC
+        </if>
+        <if test="modiflyFlags!=null and modiflyFlags.toString.equals('[5]')">
+            ORDER BY fileTime DESC
+        </if>
+    </select>
+
+    <select id="getReportNo" resultType="java.lang.String">
+        SELECT reportNo FROM valvehistory ORDER BY reportNo DESC limit 1;
+    </select>
+
+    <select id="getReportNumByModiflyFlagAndTime" resultMap="ValveHistoryNotify">
+        SELECT reportNo,createName,createTime,checkName,checkTime,approveName,approveTime,fileName,fileTime FROM
+        valvehistory WHERE
+        1 = 1 AND
+        <if test="modiflyFlags.toString.equals('[0]')">
+            createTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[2, 12]')">
+            checkTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[4, 14]')">
+            approveTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[5]')">
+            fileTime
+        </if>
+        BETWEEN #{startTime} AND #{nowTime}
+    </select>
+
+    <insert id="insertValvehistory" parameterType="src.yugui.entity.ValveHistoryInfo">
+        insert into valvehistory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reportNo != null and reportNo!=''">
+                reportNo,
+            </if>
+            <if test="modifyFlag != null">
+                modifyFlag,
+            </if>
+            <if test="createName != null and createName!=''">
+                createName,
+            </if>
+            <if test="createRealName != null and createRealName!=''">
+                createRealName,
+            </if>
+            <if test="createTime != null and createTime!=''">
+                createTime,
+            </if>
+            <if test="deviceType != null and deviceType!=''">
+                deviceType,
+            </if>
+            <if test="nominalDiameter != null and nominalDiameter!=''">
+                nominalDiameter,
+            </if>
+            <if test="channelDiameter != null and channelDiameter!=''">
+                channelDiameter,
+            </if>
+            <if test="pressureLevel != null and pressureLevel!=''">
+                pressureLevel,
+            </if>
+            <if test="madeCompany != null and madeCompany!=''">
+                madeCompany,
+            </if>
+            <if test="madeLicenseNo != null and madeLicenseNo!=''">
+                madeLicenseNo,
+            </if>
+            <if test="factoryTime != null and factoryTime!=''">
+                factoryTime,
+            </if>
+            <if test="gaugeAccuracy != null and gaugeAccuracy!=''">
+                gaugeAccuracy,
+            </if>
+            <if test="checkMediumTemperature != null and checkMediumTemperature!=''">
+                checkMediumTemperature,
+            </if>
+            <if test="checkAppearance != null and checkAppearance!=''">
+                checkAppearance,
+            </if>
+            <if test="firstSettingPressure != null and firstSettingPressure!=''">
+                firstSettingPressure,
+            </if>
+            <if test="firstSealTestPressure != null and firstSealTestPressure!=''">
+                firstSealTestPressure,
+            </if>
+            <if test="secondSettingPressure != null and secondSettingPressure!=''">
+                secondSettingPressure,
+            </if>
+            <if test="secondSealTestPressure != null and secondSealTestPressure!=''">
+                secondSealTestPressure,
+            </if>
+            <if test="thirdSettingPressure != null and thirdSettingPressure!=''">
+                thirdSettingPressure,
+            </if>
+            <if test="thirdSealTestPressure != null and thirdSealTestPressure!=''">
+                thirdSealTestPressure,
+            </if>
+            <if test="checkEffectiveTime != null and checkEffectiveTime!=''">
+                checkEffectiveTime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reportNo != null and reportNo!=''">
+                #{reportNo,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyFlag != null">
+                #{modifyFlag,jdbcType=INTEGER},
+            </if>
+            <if test="createName != null and createName!=''">
+                #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="createRealName != null and createRealName!=''">
+                #{createRealName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null and createTime!=''">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null and deviceType!=''">
+                #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="nominalDiameter != null and nominalDiameter!=''">
+                #{nominalDiameter,jdbcType=VARCHAR},
+            </if>
+            <if test="channelDiameter != null and channelDiameter!=''">
+                #{channelDiameter,jdbcType=VARCHAR},
+            </if>
+            <if test="pressureLevel != null and pressureLevel!=''">
+                #{pressureLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="madeCompany != null and madeCompany!=''">
+                #{madeCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="madeLicenseNo != null and madeLicenseNo!=''">
+                #{madeLicenseNo,jdbcType=VARCHAR},
+            </if>
+            <if test="factoryTime != null and factoryTime!=''">
+                #{factoryTime,jdbcType=VARCHAR},
+            </if>
+            <if test="gaugeAccuracy != null and gaugeAccuracy!=''">
+                #{gaugeAccuracy,jdbcType=VARCHAR},
+            </if>
+            <if test="checkMediumTemperature != null and checkMediumTemperature!=''">
+                #{checkMediumTemperature,jdbcType=VARCHAR},
+            </if>
+            <if test="checkAppearance != null and checkAppearance!=''">
+                #{checkAppearance,jdbcType=VARCHAR},
+            </if>
+            <if test="firstSettingPressure != null and firstSettingPressure!=''">
+                #{firstSettingPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="firstSealTestPressure != null and firstSealTestPressure!=''">
+                #{firstSealTestPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="secondSettingPressure != null and secondSettingPressure!=''">
+                #{secondSettingPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="secondSealTestPressure != null and secondSealTestPressure!=''">
+                #{secondSealTestPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="thirdSettingPressure != null and thirdSettingPressure!=''">
+                #{thirdSettingPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="thirdSealTestPressure != null and thirdSealTestPressure!=''">
+                #{thirdSealTestPressure,jdbcType=VARCHAR},
+            </if>
+            <if test="checkEffectiveTime != null and checkEffectiveTime!=''">
+                #{checkEffectiveTime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateValvehistory">
+        update  valvehistory set  modifyFlag = #{flag} where reportNo = #{reportNo};
+    </update>
+
+    <update id="updateValvehistoryByReport" parameterType="src.yugui.entity.ValveHistoryInfo">
+        update valvehistory
+        <set>
+            <if test="modifyFlag != null">
+                modifyFlag = #{modifyFlag,jdbcType=INTEGER},
+            </if>
+            <if test="checkName!=null and checkName!=''">
+                checkName = #{checkName,jdbcType=VARCHAR},
+            </if>
+            <if test="checkRealName!=null and checkRealName!=''">
+                checkRealName = #{checkRealName,jdbcType=VARCHAR},
+            </if>
+            <if test="checkReason!=null and checkReason!=''">
+                checkReason = #{checkReason,jdbcType=VARCHAR},
+            </if>
+            <if test="checkTime!=null and checkTime!=''">
+                checkTime = #{checkTime,jdbcType=VARCHAR},
+            </if>
+            <if test="approveName!=null and approveName!=''">
+                approveName = #{approveName,jdbcType=VARCHAR},
+            </if>
+            <if test="approveRealName!=null and approveRealName!=''">
+                approveRealName = #{approveRealName,jdbcType=VARCHAR},
+            </if>
+            <if test="approveReason!=null and approveReason!=''">
+                approveReason = #{approveReason,jdbcType=VARCHAR},
+            </if>
+            <if test="approveTime!=null and approveTime!=''">
+                approveTime = #{approveTime,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName!=null and fileName!=''">
+                fileName = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileRealName!=null and fileRealName!=''">
+                fileRealName = #{fileRealName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileTime!=null and fileTime!=''">
+                fileTime = #{fileTime,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where reportNo = #{reportNo,jdbcType=VARCHAR};
+    </update>
+
+</mapper>
