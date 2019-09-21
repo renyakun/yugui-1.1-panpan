@@ -68,6 +68,7 @@ public class ValveReportController extends BaseController {
         UserInfo userInfo = getLoginUser();
         Object reportNum = valveMap.get("reportNo");
         if (reportNum == null || reportNum == ""){
+            logger.info("-------------------------1------>");
             return ResponseMsg.error("未提交报告编号reportNo");
         }
         String reportNo = reportNum.toString();
