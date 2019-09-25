@@ -40,4 +40,9 @@ public class RecordServiceImpl implements RecordService {
     public Boolean deleteNotifyOrEvent(List<Long> notifyIds) {
         return recordMapper.deleteNotifyOrEvent(notifyIds);
     }
+
+    @Override
+    public Boolean delNotifyOutMoon(String outTime, String nowTime) {
+        return recordMapper.delNotifyOutMoon(outTime, nowTime);
+    }
 }

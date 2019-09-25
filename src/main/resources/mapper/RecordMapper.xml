@@ -5,7 +5,7 @@
     <resultMap id="default" type="src.yugui.entity.Record"/>
 
     <select id="getRecordList" resultMap="default">
-        SELECT * FROM record ORDER BY id DESC limit 30;
+        SELECT * FROM record ORDER BY id DESC LIMIT 30
     </select>
 
     <select id="getRecordListOfNotify" resultMap="default">
@@ -64,5 +64,9 @@
         </foreach>
         )
     </update>
+
+    <delete id="delNotifyOutMoon">
+        DELETE FROM record WHERE operation_time NOT BETWEEN #{outTime} AND #{nowTime}
+    </delete>
 
 </mapper>

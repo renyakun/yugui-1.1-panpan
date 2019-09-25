@@ -108,7 +108,7 @@ public class ValveReportController extends BaseController {
         Map<String, Object> recordMap = new HashMap<>();
         recordMap.put("reportNo", reportNo);
         recordMap.put("userName", userInfo.getUserName());
-        String message = "@{userName}新建了一份报告: @{reportNo}";
+        String message = "@{userName}新建了一份报告: @{reportNo}查看报告详情";
         recordMap.put("message", message);
         recordMap.put("operationTime", nowTime);
         recordMap.put("operationType", Constant.OPERATION_TYPE_NOTIFY);

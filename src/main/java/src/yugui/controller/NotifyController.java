@@ -15,9 +15,8 @@ import src.yugui.service.ValveHistoryService;
 import src.yugui.util.Constant;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Description: 处理消息通知
@@ -81,6 +80,11 @@ public class NotifyController extends BaseController {
     @GetMapping("/getReportNotify")
     public ResponseMsg getReportNotify() {
         List<Record> records = recordService.getRecordList();
+        String mon = TimeTool.getOutMoonTime();
+        String nowTime = TimeTool.getTodayEndTimeZT();
+        logger.info("过去一个月：" + mon + "今日结束时间：" + nowTime);
+        //删除过去一个月的记录
+        recordService.delNotifyOutMoon(mon, nowTime);
         return ResponseMsg.ok(records);
     }
 
@@ -163,7 +167,7 @@ public class NotifyController extends BaseController {
             checkPassRate = 100;
         } else {
             checkPassRate = (1 - checkNumPass / checkNum) * 100;
-            checkPassRate = (double)Math.round(checkPassRate*100)/100;
+            checkPassRate = (double) Math.round(checkPassRate * 100) / 100;
             logger.info("checkPassRateNo: " + checkPassRate);
         }
         //今日审批通过率
@@ -172,7 +176,7 @@ public class NotifyController extends BaseController {
             approvePassRate = 100;
         } else {
             approvePassRate = (1 - approveNumPass / approveNum) * 100;
-            approvePassRate = (double)Math.round(approvePassRate*100)/100;
+            approvePassRate = (double) Math.round(approvePassRate * 100) / 100;
             logger.info("approvePassRate: " + approvePassRate);
         }
 

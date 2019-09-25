@@ -20,4 +20,7 @@ public interface RecordService {
     Boolean addRecord(Map<String, Object> recordMap);
 
     Boolean deleteNotifyOrEvent(List<Long> notifyIds);
+
+    //删除过去一个月的记录
+    Boolean delNotifyOutMoon(String outTime, String nowTime);
 }

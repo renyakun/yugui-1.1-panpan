@@ -134,7 +134,14 @@ public class ValveHistoryController extends BaseController {
         String nowTime = TimeTool.getNowTime();
         Map<String, Object> recordMap = new HashMap<>();
         recordMap.put("userName", userInfo.getUserName());
-        String message = "@{userName}审核了报告: @{reportNo}";
+        String result;
+        if (infoMap.get("flag").equals("2")) {
+            result = "通过";
+
+        } else {
+            result = "不通过";
+        }
+        String message = "@{userName}审核了报告: @{reportNo} 审核结果：" + result;
         recordMap.put("message", message);
         recordMap.put("reportNo", reportNo);
         recordMap.put("operationTime", nowTime);
@@ -161,7 +168,7 @@ public class ValveHistoryController extends BaseController {
         modiflyFlags.add(Constant.REPORT_STATE_UNCHECK);
         Map<String, Object> valveHistoryMap = new HashMap<>();
         valveHistoryMap.put("modiflyFlags", modiflyFlags);
-        if (realName.equals(Position.POSITION_SUPER_ADMIN)){
+        if (realName.equals(Position.POSITION_SUPER_ADMIN)) {
             logger.info("-------------->" + valveHistoryMap);
             valveHistoryInfos = valveHistoryService.getValveHistoryList(valveHistoryMap);
         }
@@ -170,7 +177,7 @@ public class ValveHistoryController extends BaseController {
             logger.info("-------------->" + valveHistoryMap);
             valveHistoryInfos = valveHistoryService.getValveHistoryList(valveHistoryMap);
         }
-        if (realName.equals(Position.POSITION_CHECK)){
+        if (realName.equals(Position.POSITION_CHECK)) {
             valveHistoryMap.put("checkName", userName);
             logger.info("-------------->" + valveHistoryMap);
             valveHistoryInfos = valveHistoryService.getValveHistoryList(valveHistoryMap);
@@ -227,10 +234,17 @@ public class ValveHistoryController extends BaseController {
             userService.updateUser(userMap);
         }
         //向记录表添加数据
+        String result;
+        if (infoMap.get("flag").equals("4")) {
+            result = "通过";
+
+        } else {
+            result = "不通过";
+        }
         String nowTime = TimeTool.getNowTime();
         Map<String, Object> recordMap = new HashMap<>();
         recordMap.put("userName", userInfo.getUserName());
-        String message = "@{userName}审批了报告: @{reportNo}";
+        String message = "@{userName}审批了报告: @{reportNo}审批结果：" + result;
         recordMap.put("message", message);
         recordMap.put("operationTime", nowTime);
         recordMap.put("reportNo", reportNo);
@@ -258,14 +272,14 @@ public class ValveHistoryController extends BaseController {
         valveHistoryMap.put("modiflyFlags", modiflyFlags);
 
         List<ValveHistoryInfo> valveHistoryInfos = null;
-        if (realName.equals(Position.POSITION_SUPER_ADMIN)){
+        if (realName.equals(Position.POSITION_SUPER_ADMIN)) {
             valveHistoryInfos = valveHistoryService.getValveHistoryList(valveHistoryMap);
         }
         if (realName.equals(Position.POSITION_CHECK)) {
             valveHistoryMap.put("checkName", userName);
             valveHistoryInfos = valveHistoryService.getValveHistoryList(valveHistoryMap);
         }
-        if (realName.equals(Position.POSITION_APPROVSL)){
+        if (realName.equals(Position.POSITION_APPROVSL)) {
             valveHistoryMap.put("approveName", userName);
             valveHistoryInfos = valveHistoryService.getValveHistoryList(valveHistoryMap);
         }
@@ -326,7 +340,7 @@ public class ValveHistoryController extends BaseController {
         Map<String, Object> recordMap = new HashMap<>();
         recordMap.put("operationTime", nowTime);
         recordMap.put("userName", userInfo.getUserName());
-        String message = "@{userName}归档了报告: @{reportNo}";
+        String message = "@{userName}归档了报告: @{reportNo}查看报告详情";
         recordMap.put("message", message);
         recordMap.put("reportNo", reportNo);
         recordMap.put("operationType", Constant.OPERATION_TYPE_NOTIFY);

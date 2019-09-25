@@ -27,4 +27,5 @@ public interface RecordMapper extends BaseMapper<Record> {
 
     Boolean deleteNotifyOrEvent(@Param("notifyIds") List<Long> notifyIds);
 
+    Boolean delNotifyOutMoon(@Param("outTime") String outTime, @Param("nowTime") String nowTime);
 }
