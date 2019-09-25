@@ -55,6 +55,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.deleteUser(userNames, modifyTime);
     }
 
+    @Override
+    public String getUserSignature(String userName) {
+        return userMapper.getUserSignature(userName);
+    }
+
 }
 
 

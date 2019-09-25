@@ -43,4 +43,10 @@ public interface UserService {
      */
     Boolean deleteUser(List<String> userNames, String modifyTime);
 
+    /**
+     * 获取用户的电子签名通过用户名
+     */
+    String getUserSignature(String userName);
+
+
 }

@@ -60,6 +60,11 @@ public class ValveHistoryServiceImpl implements ValveHistoryService {
     public List<ValveHistoryNotify> getReportNumByModiflyFlagAndTime(List<Integer> modiflyFlags, String startTime, String nowTime) {
         return valveHistoryMapper.getReportNumByModiflyFlagAndTime(modiflyFlags,startTime,nowTime);
     }
+
+    @Override
+    public List<ValveHistoryNotify> getReportNumByModiflyFlagsAndTime(List<Integer> modiflyFlags, String startTime, String nowTime) {
+        return valveHistoryMapper.getReportNumByModiflyFlagsAndTime(modiflyFlags,startTime,nowTime);
+    }
 }
 
 

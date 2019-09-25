@@ -111,7 +111,8 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/getSignature", method = {RequestMethod.GET})
     public ResponseMsg getSignature() {
         UserInfo userInfo = getLoginUser();
-        String signature = userInfo.getSignature();
+        String userName = userInfo.getUserName();
+        String signature = userService.getUserSignature(userName);
         return ResponseMsg.ok(signature);
     }
 

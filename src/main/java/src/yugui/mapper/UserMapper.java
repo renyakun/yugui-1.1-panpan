@@ -30,4 +30,6 @@ public interface UserMapper extends BaseMapper<UserInfo> {
 
     Boolean deleteUser(@Param("userNames") List<String> userNames, @Param("modifyTime") String modifyTime);
 
+    String getUserSignature(@Param("userName") String userName);
+
 }

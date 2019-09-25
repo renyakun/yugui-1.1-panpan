@@ -34,4 +34,6 @@ public interface ValveHistoryMapper extends BaseMapper<ValveHistoryInfo> {
     String getReportNo();
 
     List<ValveHistoryNotify> getReportNumByModiflyFlagAndTime(@Param("modiflyFlags") List<Integer> modiflyFlags, @Param("startTime") String startTime, @Param("nowTime") String nowTime);
+
+    List<ValveHistoryNotify> getReportNumByModiflyFlagsAndTime(@Param("modiflyFlags") List<Integer> modiflyFlags, @Param("startTime") String startTime, @Param("nowTime") String nowTime);
 }

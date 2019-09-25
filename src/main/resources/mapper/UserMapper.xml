@@ -18,6 +18,10 @@
         SELECT user_name FROM user where enable = 1
     </select>
 
+    <select id="getUserSignature" resultType="java.lang.String">
+        SELECT signature FROM user where enable = 1 AND user_name = #{userName,jdbcType=VARCHAR}
+    </select>
+
 
     <insert id="addUser" parameterType="src.yugui.entity.UserInfo">
         insert into user

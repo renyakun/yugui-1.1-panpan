@@ -48,5 +48,10 @@ public interface ValveHistoryService {
      */
     List<ValveHistoryNotify> getReportNumByModiflyFlagAndTime(List<Integer> modiflyFlags, String startTime, String nowTime);
 
+    /**
+     * 获取今日内所有ValveHistory表信息通过状态
+     */
+    List<ValveHistoryNotify> getReportNumByModiflyFlagsAndTime(List<Integer> modiflyFlags, String startTime, String nowTime);
+
 
 }

@@ -57,7 +57,46 @@
         <if test="modiflyFlags.toString.equals('[2, 12]')">
             checkTime
         </if>
+        <if test="modiflyFlags.toString.equals('[12]')">
+            checkTime
+        </if>
         <if test="modiflyFlags.toString.equals('[4, 14]')">
+            approveTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[14]')">
+            approveTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[5]')">
+            fileTime
+        </if>
+        BETWEEN #{startTime} AND #{nowTime}
+    </select>
+
+    <select id="getReportNumByModiflyFlagsAndTime" resultMap="ValveHistoryNotify">
+        SELECT reportNo,createName,createTime,checkName,checkTime,approveName,approveTime,fileName,fileTime FROM
+        valvehistory WHERE
+        1 = 1
+        <if test="modiflyFlags != null and modiflyFlags.size() > 0">
+            AND modifyFlag IN (
+            <foreach collection="modiflyFlags" separator="," item="flag">
+                #{flag}
+            </foreach>
+            )
+        </if>
+        AND
+        <if test="modiflyFlags.toString.equals('[0]')">
+            createTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[2, 12]')">
+            checkTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[12]')">
+            checkTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[4, 14]')">
+            approveTime
+        </if>
+        <if test="modiflyFlags.toString.equals('[14]')">
             approveTime
         </if>
         <if test="modiflyFlags.toString.equals('[5]')">

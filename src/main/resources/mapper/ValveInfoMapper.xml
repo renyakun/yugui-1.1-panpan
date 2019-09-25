@@ -11,7 +11,7 @@
     </sql>
 
     <select id="getValveReportByReportNo" resultMap="default">
-        SELECT <include refid="Base_Column_List"/> FROM valveinfo WHERE reportNo = #{reportNo} LIMIT 1;
+        SELECT <include refid="Base_Column_List"/> FROM valveinfo WHERE reportNo = #{reportNo}
     </select>
 
     <insert id="creatReport" parameterType="src.yugui.entity.ValveReportInfo">

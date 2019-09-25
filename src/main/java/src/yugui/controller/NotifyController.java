@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import src.yugui.common.ResponseMsg;
 import src.yugui.common.TimeTool;
 import src.yugui.common.constant.Position;
-import src.yugui.entity.NotifyInfo;
-import src.yugui.entity.Record;
-import src.yugui.entity.UserInfo;
-import src.yugui.entity.ValveHistoryNotify;
+import src.yugui.entity.*;
 import src.yugui.service.RecordService;
 import src.yugui.service.ValveHistoryService;
 import src.yugui.util.Constant;
@@ -122,5 +119,66 @@ public class NotifyController extends BaseController {
         List<Long> noyifyIds = (List<Long>) ids;
         recordService.deleteNotifyOrEvent(noyifyIds);
         return ResponseMsg.ok("删除成功！");
+    }
+
+    @ApiOperation(value = "今日审核审批通过率接口", response = ResponseMsg.class)
+    @GetMapping("/getPassRate")
+    public ResponseMsg getPassRate() {
+        String startTime = TimeTool.getTodayStartTime();//今日的开始时间
+        String endTime = TimeTool.getTodayEndTime();//今日的结束时间
+
+        List<Integer> modiflyFlags = new ArrayList<>();
+        List<ValveHistoryNotify> valveHistoryNotifies;
+
+        //今日已审核报告数量
+        modiflyFlags.add(Constant.REPORT_STATE_CHECK);
+        modiflyFlags.add(Constant.REPORT_STATE_UNCHECK);
+        valveHistoryNotifies = valveHistoryService.getReportNumByModiflyFlagAndTime(modiflyFlags, startTime, endTime);
+        double checkNum = valveHistoryNotifies.size();
+
+        //今日已审核且不通过报告数量
+        modiflyFlags = new ArrayList<>();
+        modiflyFlags.add(Constant.REPORT_STATE_UNCHECK);
+        valveHistoryNotifies = valveHistoryService.getReportNumByModiflyFlagsAndTime(modiflyFlags, startTime, endTime);
+        double checkNumPass = valveHistoryNotifies.size();
+
+        //今日已审核报告数量
+        modiflyFlags = new ArrayList<>();
+        modiflyFlags.add(Constant.REPORT_STATE_APPROVE);
+        modiflyFlags.add(Constant.REPORT_STATE_UNAPPROVE);
+        valveHistoryNotifies = valveHistoryService.getReportNumByModiflyFlagAndTime(modiflyFlags, startTime, endTime);
+        double approveNum = valveHistoryNotifies.size();
+
+        //今日已审批且不通过报告数量
+        modiflyFlags = new ArrayList<>();
+        modiflyFlags.add(Constant.REPORT_STATE_UNAPPROVE);
+        valveHistoryNotifies = valveHistoryService.getReportNumByModiflyFlagsAndTime(modiflyFlags, startTime, endTime);
+        double approveNumPass = valveHistoryNotifies.size();
+
+        logger.info("checkNum: " + checkNum + "checkNumPass: " + checkNumPass + "approveNum: " + approveNum + "approveNumPass: " + approveNumPass);
+
+        //今日审核通过率
+        double checkPassRate;
+        if (checkNum == 0 || checkNumPass == 0) {
+            checkPassRate = 100;
+        } else {
+            checkPassRate = (1 - checkNumPass / checkNum) * 100;
+            checkPassRate = (double)Math.round(checkPassRate*100)/100;
+            logger.info("checkPassRateNo: " + checkPassRate);
+        }
+        //今日审批通过率
+        double approvePassRate;
+        if (approveNumPass == 0 || approveNum == 0) {
+            approvePassRate = 100;
+        } else {
+            approvePassRate = (1 - approveNumPass / approveNum) * 100;
+            approvePassRate = (double)Math.round(approvePassRate*100)/100;
+            logger.info("approvePassRate: " + approvePassRate);
+        }
+
+        PassRate passRate = new PassRate();
+        passRate.setCheckPassRate(checkPassRate);
+        passRate.setApprovePassRate(approvePassRate);
+        return ResponseMsg.ok(passRate);
     }
 }

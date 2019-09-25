@@ -122,7 +122,7 @@ public class ValveHistoryController extends BaseController {
         valveReportService.updateValveReportInfo(reportMap);
 
         //个人信息修改成最新的电子签名
-        if (!userInfo.getSignature().equals(checkSignature)) {
+        if (StringUtils.isEmpty(userInfo.getSignature()) || !userInfo.getSignature().equals(checkSignature)) {
             Map<String, String> userMap = new HashMap<>();
             userMap.put("modifyTime", tsStr);//修改时间
             userMap.put("realName", userInfo.getRealName());//职位
@@ -218,7 +218,7 @@ public class ValveHistoryController extends BaseController {
         valveReportService.updateValveReportInfo(reportMap);
 
         //个人信息修改成最新的电子签名
-        if (!userInfo.getSignature().equals(approveSignature)) {
+        if (StringUtils.isEmpty(userInfo.getSignature()) || !userInfo.getSignature().equals(approveSignature)) {
             Map<String, String> userMap = new HashMap<>();
             userMap.put("signature", approveSignature);//电子签名
             userMap.put("realName", userInfo.getRealName());//职位
