@@ -67,12 +67,6 @@ public class CompanyController extends BaseController {
     @RequestMapping(value = "/addCompany", method = {RequestMethod.POST})
     public ResponseMsg addCompany(@RequestBody(required = true) Map<String, Object> companyMap) {
         UserInfo userInfo = getLoginUser();
-        String realName = userInfo.getRealName();
-        if (!realName.equals("超级管理员")) {
-            return ResponseMsg.error("您没有操作权限，请联系超级管理员！");
-        }
-
-        logger.info("companyMap--" + companyMap);
         String companyUse = (String) companyMap.get("companyUse");
         //判断企业是否已经存在
         Company companyList = companyService.getCompanyUseListByCompanyUse(companyUse);
@@ -93,12 +87,6 @@ public class CompanyController extends BaseController {
     @ApiOperation(value = "删除企业/可批量删除", response = ResponseMsg.class)
     @RequestMapping(value = "/deleteCompany", method = {RequestMethod.POST})
     public ResponseMsg deleteCompany(@RequestBody(required = true) Map<String, Object> companyMap) {
-        UserInfo userInfo = getLoginUser();
-        String realName = userInfo.getRealName();
-        if (!realName.equals("超级管理员")) {
-            return ResponseMsg.error("您没有操作权限，请联系超级管理员！");
-        }
-
         Object ids = companyMap.get("ids");
         logger.info(ids);
         if (ids == null || ids == "") {
@@ -113,12 +101,6 @@ public class CompanyController extends BaseController {
     @ApiOperation(value = "修改企业", response = ResponseMsg.class)
     @RequestMapping(value = "/updateCompany", method = {RequestMethod.POST})
     public ResponseMsg updateCompany(@RequestBody(required = true) Map<String, Object> companyMap) {
-        UserInfo userInfo = getLoginUser();
-        String realName = userInfo.getRealName();
-        if (!realName.equals("超级管理员")) {
-            return ResponseMsg.error("您没有操作权限，请联系超级管理员！");
-        }
-
         if (companyMap.isEmpty() || StringUtils.isEmpty(companyMap.get("id").toString())) {
             return ResponseMsg.error("未提交数据");
         }
