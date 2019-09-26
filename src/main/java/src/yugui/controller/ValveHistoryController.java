@@ -139,7 +139,7 @@ public class ValveHistoryController extends BaseController {
             result = "通过";
 
         } else {
-            result = "不通过";
+            result = "不通过" + "    原因：" + infoMap.get("reason");
         }
         String message = "@{userName}审核了报告: @{reportNo} 审核结果：" + result;
         recordMap.put("message", message);
@@ -239,7 +239,7 @@ public class ValveHistoryController extends BaseController {
             result = "通过";
 
         } else {
-            result = "不通过";
+            result = "不通过" + "    原因：" + infoMap.get("reason");
         }
         String nowTime = TimeTool.getNowTime();
         Map<String, Object> recordMap = new HashMap<>();
