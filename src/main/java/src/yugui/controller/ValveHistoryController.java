@@ -62,7 +62,6 @@ public class ValveHistoryController extends BaseController {
             return ResponseMsg.error("未提交报告编号");
         }
         ReportDetail detail = new ReportDetail();
-
         ValveReportInfo reportInfo = valveReportService.getValveReportByReportNo(reportNo);
         ValveHistoryInfo historyInfo = valveHistoryService.getValveHistoryInfoByReportNo(reportNo);
         detail.setReportInfo(reportInfo);
@@ -77,9 +76,7 @@ public class ValveHistoryController extends BaseController {
         if (StringUtils.isEmpty(reportNo)) {
             return ResponseMsg.error("未提交报告编号");
         }
-
         ValveReportInfo reportInfo = valveReportService.getValveReportByReportNo(reportNo);
-
         String checkSignatureUrl = reportInfo.getCheckSignatureUrl();
         logger.info("checkSignatureUrl: " + checkSignatureUrl);
         ConvertBase64ToImage.getImg(checkSignatureUrl,response);
@@ -93,9 +90,7 @@ public class ValveHistoryController extends BaseController {
         if (StringUtils.isEmpty(reportNo)) {
             return ResponseMsg.error("未提交报告编号");
         }
-
         ValveReportInfo reportInfo = valveReportService.getValveReportByReportNo(reportNo);
-
         String approveSignatureUrl = reportInfo.getApproveSignatureUrl();
         logger.info("approveSignatureUrl: " + approveSignatureUrl);
         ConvertBase64ToImage.getImg(approveSignatureUrl,response);
@@ -368,25 +363,21 @@ public class ValveHistoryController extends BaseController {
         infoMap.put("fileName", userInfo.getUserName());
         infoMap.put("fileRealName", userInfo.getRealName());
         infoMap.put("fileTime", tsStr);
-
-        Boolean uvh = valveHistoryService.updateValvehistory(infoMap);
+        valveHistoryService.updateValvehistory(infoMap);
 
         Map<String, Object> valveNotifyMap = new HashMap<>();
         valveNotifyMap.put("reportNo", infoMap.get("reportNo"));
         valveNotifyMap.put("flag", Constant.REPORT_STATE_FILE);
         valveNotifyMap.put("realName", userInfo.getRealName());
         valveNotifyMap.put("preUser", userInfo.getUserName());
-        Boolean uun = userNotifyService.updateUserNotify(valveNotifyMap);
-        if (!uvh || !uun) {
-            return ResponseMsg.error("报告归档失败！");
-        }
+        userNotifyService.updateUserNotify(valveNotifyMap);
 
         //向记录表添加数据
         String nowTime = TimeTool.getNowTime();
         Map<String, Object> recordMap = new HashMap<>();
         recordMap.put("operationTime", nowTime);
         recordMap.put("userName", userInfo.getUserName());
-        String message = "@{userName}归档了报告: @{reportNo}查看报告详情";
+        String message = "@{userName}归档了报告: @{reportNo}";
         recordMap.put("message", message);
         recordMap.put("reportNo", reportNo);
         recordMap.put("operationType", Constant.OPERATION_TYPE_NOTIFY);
