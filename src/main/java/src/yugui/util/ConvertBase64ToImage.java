@@ -62,7 +62,7 @@ public class ConvertBase64ToImage {
             fis.read(temp, 0, (int) size);
             fis.close();
             byte[] data = temp;
-            response.setContentType("image/png");
+            response.setContentType("image/jpg");
             OutputStream out = response.getOutputStream();
             out.write(data);
             out.flush();
