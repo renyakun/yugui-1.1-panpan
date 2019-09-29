@@ -18,8 +18,15 @@ import src.yugui.util.Constant;
 import src.yugui.entity.ReportDetail;
 import src.yugui.entity.ValveHistoryInfo;
 import src.yugui.entity.ValveReportInfo;
+import src.yugui.util.ConvertBase64ToImage;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +57,7 @@ public class ValveHistoryController extends BaseController {
     @ApiOperation(value = "根据编号查询安全阀校验报告表/记录表详情", response = ResponseMsg.class)
     @RequestMapping(value = "/getReportDetail", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseMsg getEnterpriceList(@RequestParam(value = "reportNo", required = true) String reportNo) {
+    public ResponseMsg getEnterpriceList(@RequestParam(value = "reportNo", required = true) String reportNo, HttpServletResponse response) throws IOException {
         if (StringUtils.isEmpty(reportNo)) {
             return ResponseMsg.error("未提交报告编号");
         }
@@ -60,8 +67,39 @@ public class ValveHistoryController extends BaseController {
         ValveHistoryInfo historyInfo = valveHistoryService.getValveHistoryInfoByReportNo(reportNo);
         detail.setReportInfo(reportInfo);
         detail.setHistoryInfo(historyInfo);
-
         return ResponseMsg.ok(detail);
+    }
+
+    @ApiOperation(value = "根据编号得到审核人电子签名", response = ResponseMsg.class)
+    @RequestMapping(value = "/getCheckSignature", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseMsg getCheckSignature(@RequestParam(value = "reportNo", required = true) String reportNo, HttpServletResponse response) throws IOException {
+        if (StringUtils.isEmpty(reportNo)) {
+            return ResponseMsg.error("未提交报告编号");
+        }
+
+        ValveReportInfo reportInfo = valveReportService.getValveReportByReportNo(reportNo);
+
+        String checkSignatureUrl = reportInfo.getCheckSignatureUrl();
+        logger.info("checkSignatureUrl: " + checkSignatureUrl);
+        ConvertBase64ToImage.getImg(checkSignatureUrl,response);
+        return ResponseMsg.ok();
+    }
+
+    @ApiOperation(value = "根据编号得到审批人电子签名", response = ResponseMsg.class)
+    @RequestMapping(value = "/getApproveSignature", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseMsg getApproveSignature(@RequestParam(value = "reportNo", required = true) String reportNo, HttpServletResponse response) throws IOException {
+        if (StringUtils.isEmpty(reportNo)) {
+            return ResponseMsg.error("未提交报告编号");
+        }
+
+        ValveReportInfo reportInfo = valveReportService.getValveReportByReportNo(reportNo);
+
+        String approveSignatureUrl = reportInfo.getApproveSignatureUrl();
+        logger.info("approveSignatureUrl: " + approveSignatureUrl);
+        ConvertBase64ToImage.getImg(approveSignatureUrl,response);
+        return ResponseMsg.ok();
     }
 
     @ApiOperation(value = "新建报告列表接口", response = ResponseMsg.class)
@@ -98,27 +136,28 @@ public class ValveHistoryController extends BaseController {
         if (StringUtils.isEmpty(checkSignature)) {
             return ResponseMsg.error("未提交审核人的电子签名checkSignature");
         }
+        //将电子签名base64格式转成图片存到本地项目位置审批电子签名路径
+        String checkSignatureImg = ConvertBase64ToImage.GenerateImage(checkSignature);
+
         infoMap.put("modifyFlag", infoMap.get("flag"));
         infoMap.put("checkReason", infoMap.get("reason"));
         infoMap.put("checkName", userInfo.getUserName());
         infoMap.put("checkRealName", userInfo.getRealName());
         infoMap.put("checkTime", tsStr);
         logger.info("infoMap: ---->" + infoMap);
+        valveHistoryService.updateValvehistory(infoMap);
 
-        Boolean upv = valveHistoryService.updateValvehistory(infoMap);
         Map<String, Object> valveNotifyMap = new HashMap<>();
         valveNotifyMap.put("preUser", userInfo.getUserName());
         valveNotifyMap.put("reportNo", reportNo);
         valveNotifyMap.put("realName", userInfo.getRealName());
         valveNotifyMap.put("flag", Integer.parseInt(infoMap.get("flag")));
-        Boolean upu = userNotifyService.updateUserNotify(valveNotifyMap);
-        if (!upu || !upv) {
-            return ResponseMsg.error("提交审核失败！");
-        }
+        userNotifyService.updateUserNotify(valveNotifyMap);
         //报告表中添加审核人的电子签名
         Map<String, Object> reportMap = new HashMap<>();
         reportMap.put("reportNo", reportNo);
         reportMap.put("checkSignature", checkSignature);
+        reportMap.put("checkSignatureUrl", checkSignatureImg);
         valveReportService.updateValveReportInfo(reportMap);
 
         //个人信息修改成最新的电子签名
@@ -128,6 +167,7 @@ public class ValveHistoryController extends BaseController {
             userMap.put("realName", userInfo.getRealName());//职位
             userMap.put("userName", userInfo.getUserName());//用户名
             userMap.put("signature", checkSignature);//电子签名
+            userMap.put("signatureUrl", checkSignatureImg);//电子签名url地址
             userService.updateUser(userMap);
         }
         //向记录表添加数据
@@ -192,10 +232,14 @@ public class ValveHistoryController extends BaseController {
     @ResponseBody
     public ResponseMsg approveResult(@RequestBody(required = true) Map<String, String> infoMap) {
         String reportNo = infoMap.get("reportNo");
-        String approveSignature = infoMap.get("approveSignature");
+        String approveSignature = infoMap.get("approveSignature");//电子签名
         if (StringUtils.isEmpty(approveSignature)) {
             return ResponseMsg.error("未提交审批人的电子签名approveSignature");
         }
+        logger.info("approveSignature: " + approveSignature);
+        //将电子签名base64格式转成图片存到本地项目位置审批电子签名路径
+        String approveSignatureImg = ConvertBase64ToImage.GenerateImage(approveSignature);
+        logger.info("approveSignatureImg: " + approveSignatureImg);
 
         UserInfo userInfo = getLoginUser();
         String tsStr = TimeTool.getCurrentTime();
@@ -222,12 +266,14 @@ public class ValveHistoryController extends BaseController {
         Map<String, Object> reportMap = new HashMap<>();
         reportMap.put("reportNo", reportNo);
         reportMap.put("approveSignature", approveSignature);
+        reportMap.put("approveSignatureUrl", approveSignatureImg);
         valveReportService.updateValveReportInfo(reportMap);
 
         //个人信息修改成最新的电子签名
         if (StringUtils.isEmpty(userInfo.getSignature()) || !userInfo.getSignature().equals(approveSignature)) {
             Map<String, String> userMap = new HashMap<>();
             userMap.put("signature", approveSignature);//电子签名
+            userMap.put("signatureUrl", approveSignatureImg);//电子签名url地址
             userMap.put("realName", userInfo.getRealName());//职位
             userMap.put("modifyTime", tsStr);//修改时间
             userMap.put("userName", userInfo.getUserName());//用户名

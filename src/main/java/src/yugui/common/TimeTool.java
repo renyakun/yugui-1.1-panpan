@@ -54,6 +54,16 @@ public class TimeTool {
         return tsStr;
     }
 
+    //当前时间
+    public static String getTime(){
+        Timestamp ts = new Timestamp(System.currentTimeMillis() );
+        String tsStr = "";
+        DateFormat sdf = new SimpleDateFormat("yyyyMMdd'_'HH'_'mm'_'ss'_'SSS");
+        tsStr = sdf.format(ts);
+
+        return tsStr;
+    }
+
     //过去一个月时间
     public static String getOutMoonTime(){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
