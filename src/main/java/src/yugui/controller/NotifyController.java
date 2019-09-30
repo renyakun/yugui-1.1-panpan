@@ -83,7 +83,7 @@ public class NotifyController extends BaseController {
         String week = TimeTool.getOutMoonTime();
         String nowTime = TimeTool.getTodayEndTimeZT();
         logger.info("过去一周时间：" + week + "今日结束时间：" + nowTime);
-        //删除过去一个月的记录
+        //删除过去一个周的记录
         recordService.delNotifyOutMoon(week, nowTime);
         return ResponseMsg.ok(records);
     }
