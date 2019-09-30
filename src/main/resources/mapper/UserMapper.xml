@@ -10,7 +10,7 @@
     </select>
 
     <select id="getUserList" resultMap="default">
-        SELECT user_name,real_name,phone,email,create_time,user_level,signature FROM user where enable = 1
+        SELECT user_name,real_name,phone,email,create_time,user_level,signatureUrl FROM user where enable = 1
     </select>
 
 
@@ -19,7 +19,7 @@
     </select>
 
     <select id="getUserSignature" resultType="java.lang.String">
-        SELECT signature FROM user where enable = 1 AND user_name = #{userName,jdbcType=VARCHAR}
+        SELECT signatureUrl FROM user where enable = 1 AND user_name = #{userName,jdbcType=VARCHAR}
     </select>
 
 
@@ -102,9 +102,6 @@
             </if>
             <if test="email!=null and email!=''">
                 email = #{email,jdbcType=VARCHAR},
-            </if>
-            <if test="signature!=null and signature!=''">
-                signature = #{signature,jdbcType=VARCHAR},
             </if>
             <if test="signatureUrl!=null and signatureUrl!=''">
                 signatureUrl = #{signatureUrl,jdbcType=VARCHAR},

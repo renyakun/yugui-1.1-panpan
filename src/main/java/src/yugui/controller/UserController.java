@@ -65,13 +65,14 @@ public class UserController extends BaseController {
     @ApiOperation(value = "安全设置/修改管理员信息接口", response = ResponseMsg.class)
     @RequestMapping(value = "/updateUser", method = {RequestMethod.POST})
     public ResponseMsg updateUser(@RequestBody(required = false) Map<String, String> userMap) {
-        String approveSignatureImg = ConvertBase64ToImage.GenerateImage(userMap.get("signature"));
+        String SignatureImg = ConvertBase64ToImage.GenerateImage(userMap.get("signature"));
+        String SignatureUrl = "http://120.79.181.56:8079/imgs" + SignatureImg.substring(SignatureImg.lastIndexOf("/"), SignatureImg.length());
         UserInfo userInfo = getLoginUser();
         String modifyTime = TimeTool.getCurrentTime(); // 当前时间
         userMap.put("modifyTime", modifyTime);//修改时间
         userMap.put("userName", userInfo.getUserName());//用户名
         userMap.put("realName", userInfo.getRealName());//职位
-        userMap.put("signatureUrl", approveSignatureImg);//电子签名地址
+        userMap.put("signatureUrl", SignatureUrl);//电子签名地址
 
         Boolean updateUser = userService.updateUser(userMap);
         if (!updateUser) {
@@ -117,24 +118,9 @@ public class UserController extends BaseController {
     public ResponseMsg getSignature() {
         UserInfo userInfo = getLoginUser();
         String userName = userInfo.getUserName();
-        String signature = userService.getUserSignature(userName);
-        logger.info("signature: --------------->" + signature);
-
-//        File file = new File(signature);
-//        FileInputStream fis;
-//        fis = new FileInputStream(file);
-//
-//        long size = file.length();
-//        byte[] temp = new byte[(int) size];
-//        fis.read(temp, 0, (int) size);
-//        fis.close();
-//        byte[] data = temp;
-//        response.setContentType("image/png");
-//        OutputStream out = response.getOutputStream();
-//        out.write(data);
-//        out.flush();
-//        out.close();
-        return ResponseMsg.ok(signature);
+        String signatureUrl = userService.getUserSignature(userName);
+        logger.info("signatureUrl: --------------->" + signatureUrl);
+        return ResponseMsg.ok(signatureUrl);
     }
 
 

@@ -64,14 +64,14 @@ public class TimeTool {
         return tsStr;
     }
 
-    //过去一个月时间
+    //过去一周时间
     public static String getOutMoonTime(){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         Calendar c = Calendar.getInstance();
+        //过去七天
         c.setTime(new Date());
-        c.add(Calendar.MONTH, -1);
-        Date m = c.getTime();
-        String mon = format.format(m);
-        return mon;
+        c.add(Calendar.DATE, - 7);
+        Date d = c.getTime();
+        return format.format(d);
     }
 }

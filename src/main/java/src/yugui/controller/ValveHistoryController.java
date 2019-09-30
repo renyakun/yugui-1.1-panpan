@@ -69,34 +69,6 @@ public class ValveHistoryController extends BaseController {
         return ResponseMsg.ok(detail);
     }
 
-    @ApiOperation(value = "根据编号得到审核人电子签名", response = ResponseMsg.class)
-    @RequestMapping(value = "/getCheckSignature", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseMsg getCheckSignature(@RequestParam(value = "reportNo", required = true) String reportNo, HttpServletResponse response) throws IOException {
-        if (StringUtils.isEmpty(reportNo)) {
-            return ResponseMsg.error("未提交报告编号");
-        }
-        ValveReportInfo reportInfo = valveReportService.getValveReportByReportNo(reportNo);
-        String checkSignatureUrl = reportInfo.getCheckSignatureUrl();
-        logger.info("checkSignatureUrl: " + checkSignatureUrl);
-        ConvertBase64ToImage.getImg(checkSignatureUrl,response);
-        return ResponseMsg.ok();
-    }
-
-    @ApiOperation(value = "根据编号得到审批人电子签名", response = ResponseMsg.class)
-    @RequestMapping(value = "/getApproveSignature", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseMsg getApproveSignature(@RequestParam(value = "reportNo", required = true) String reportNo, HttpServletResponse response) throws IOException {
-        if (StringUtils.isEmpty(reportNo)) {
-            return ResponseMsg.error("未提交报告编号");
-        }
-        ValveReportInfo reportInfo = valveReportService.getValveReportByReportNo(reportNo);
-        String approveSignatureUrl = reportInfo.getApproveSignatureUrl();
-        logger.info("approveSignatureUrl: " + approveSignatureUrl);
-        ConvertBase64ToImage.getImg(approveSignatureUrl,response);
-        return ResponseMsg.ok();
-    }
-
     @ApiOperation(value = "新建报告列表接口", response = ResponseMsg.class)
     @RequestMapping(value = "/getNewReportList", method = RequestMethod.GET)
     @ResponseBody
@@ -131,9 +103,12 @@ public class ValveHistoryController extends BaseController {
         if (StringUtils.isEmpty(checkSignature)) {
             return ResponseMsg.error("未提交审核人的电子签名checkSignature");
         }
-        //将电子签名base64格式转成图片存到本地项目位置审批电子签名路径
-        String checkSignatureImg = ConvertBase64ToImage.GenerateImage(checkSignature);
-
+        logger.info("之前checkSignature：" + checkSignature);
+        //将电子签名是base64格式转成图片存到本地项目位置
+        if (checkSignature.contains("data:image/png;base64,")) {
+            checkSignature = ConvertBase64ToImage.GenerateImage(checkSignature);
+            logger.info("之后checkSignature：" + checkSignature);
+        }
         infoMap.put("modifyFlag", infoMap.get("flag"));
         infoMap.put("checkReason", infoMap.get("reason"));
         infoMap.put("checkName", userInfo.getUserName());
@@ -148,21 +123,21 @@ public class ValveHistoryController extends BaseController {
         valveNotifyMap.put("realName", userInfo.getRealName());
         valveNotifyMap.put("flag", Integer.parseInt(infoMap.get("flag")));
         userNotifyService.updateUserNotify(valveNotifyMap);
-        //报告表中添加审核人的电子签名
+        //报告表中添加审核人的电子签名 地址
         Map<String, Object> reportMap = new HashMap<>();
         reportMap.put("reportNo", reportNo);
-        reportMap.put("checkSignature", checkSignature);
-        reportMap.put("checkSignatureUrl", checkSignatureImg);
+        reportMap.put("checkSignatureUrl", checkSignature);
         valveReportService.updateValveReportInfo(reportMap);
 
         //个人信息修改成最新的电子签名
-        if (StringUtils.isEmpty(userInfo.getSignature()) || !userInfo.getSignature().equals(checkSignature)) {
+        String userName = userInfo.getUserName();
+        String signatureUrl = userService.getUserSignature(userName);//个人电子签名
+        if (StringUtils.isEmpty(signatureUrl) || !signatureUrl.equals(checkSignature)) {
             Map<String, String> userMap = new HashMap<>();
             userMap.put("modifyTime", tsStr);//修改时间
             userMap.put("realName", userInfo.getRealName());//职位
             userMap.put("userName", userInfo.getUserName());//用户名
-            userMap.put("signature", checkSignature);//电子签名
-            userMap.put("signatureUrl", checkSignatureImg);//电子签名url地址
+            userMap.put("signatureUrl", checkSignature);//电子签名url地址
             userService.updateUser(userMap);
         }
         //向记录表添加数据
@@ -231,11 +206,12 @@ public class ValveHistoryController extends BaseController {
         if (StringUtils.isEmpty(approveSignature)) {
             return ResponseMsg.error("未提交审批人的电子签名approveSignature");
         }
-        logger.info("approveSignature: " + approveSignature);
-        //将电子签名base64格式转成图片存到本地项目位置审批电子签名路径
-        String approveSignatureImg = ConvertBase64ToImage.GenerateImage(approveSignature);
-        logger.info("approveSignatureImg: " + approveSignatureImg);
-
+        logger.info("之前：" + approveSignature);
+        //将电子签名是base64格式转成图片存到本地项目位置
+        if (approveSignature.contains("data:image/png;base64,")) {
+            approveSignature = ConvertBase64ToImage.GenerateImage(approveSignature);
+            logger.info("之后：" + approveSignature);
+        }
         UserInfo userInfo = getLoginUser();
         String tsStr = TimeTool.getCurrentTime();
         infoMap.put("modifyFlag", infoMap.get("flag"));
@@ -260,15 +236,15 @@ public class ValveHistoryController extends BaseController {
         //报告表中添加审批人的电子签名
         Map<String, Object> reportMap = new HashMap<>();
         reportMap.put("reportNo", reportNo);
-        reportMap.put("approveSignature", approveSignature);
-        reportMap.put("approveSignatureUrl", approveSignatureImg);
+        reportMap.put("approveSignatureUrl", approveSignature);
         valveReportService.updateValveReportInfo(reportMap);
 
         //个人信息修改成最新的电子签名
-        if (StringUtils.isEmpty(userInfo.getSignature()) || !userInfo.getSignature().equals(approveSignature)) {
+        String userName = userInfo.getUserName();
+        String signatureUrl = userService.getUserSignature(userName);//个人电子签名
+        if (StringUtils.isEmpty(signatureUrl) || !signatureUrl.equals(approveSignature)) {
             Map<String, String> userMap = new HashMap<>();
-            userMap.put("signature", approveSignature);//电子签名
-            userMap.put("signatureUrl", approveSignatureImg);//电子签名url地址
+            userMap.put("signatureUrl", approveSignature);//电子签名url地址
             userMap.put("realName", userInfo.getRealName());//职位
             userMap.put("modifyTime", tsStr);//修改时间
             userMap.put("userName", userInfo.getUserName());//用户名

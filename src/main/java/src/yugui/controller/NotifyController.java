@@ -80,11 +80,11 @@ public class NotifyController extends BaseController {
     @GetMapping("/getReportNotify")
     public ResponseMsg getReportNotify() {
         List<Record> records = recordService.getRecordList();
-        String mon = TimeTool.getOutMoonTime();
+        String week = TimeTool.getOutMoonTime();
         String nowTime = TimeTool.getTodayEndTimeZT();
-        logger.info("过去一个月：" + mon + "今日结束时间：" + nowTime);
+        logger.info("过去一周时间：" + week + "今日结束时间：" + nowTime);
         //删除过去一个月的记录
-        recordService.delNotifyOutMoon(mon, nowTime);
+        recordService.delNotifyOutMoon(week, nowTime);
         return ResponseMsg.ok(records);
     }
 

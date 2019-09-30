@@ -6,8 +6,8 @@
 
     <sql id="Base_Column_List">
         reportNo,companyUse,companyAddress,companyContacts,telephone,deviceNo,installLocation,valveType,valveModel,workPressure,workMedium,
-        requireSettingPressure,standard,settingPressure,sealTestPressure,checkMode,checkMedium,checkResult,remarks,checkExplain,checkSignature,
-        approveSignature,checkSignatureUrl,approveSignatureUrl
+        requireSettingPressure,standard,settingPressure,sealTestPressure,checkMode,checkMedium,checkResult,remarks,checkExplain,checkSignatureUrl,
+        approveSignatureUrl
     </sql>
 
     <select id="getValveReportByReportNo" resultMap="default">
@@ -202,12 +202,6 @@
             </if>
             <if test="checkExplain!=null and checkExplain!=''">
                 checkExplain = #{checkExplain,jdbcType=VARCHAR},
-            </if>
-            <if test="checkSignature!=null and checkSignature!=''">
-                checkSignature = #{checkSignature,jdbcType=VARCHAR},
-            </if>
-            <if test="approveSignature!=null and approveSignature!=''">
-                approveSignature = #{approveSignature,jdbcType=VARCHAR},
             </if>
             <if test="checkSignatureUrl!=null and checkSignatureUrl!=''">
                 checkSignatureUrl = #{checkSignatureUrl,jdbcType=VARCHAR},

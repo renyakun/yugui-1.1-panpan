@@ -29,8 +29,6 @@ public class ValveReportInfo implements Serializable {
     private String checkResult;//校验结果
     private String remarks;//备注
     private String checkExplain;//维护检修情况说明
-    private String checkSignature;//审核人的电子签名
-    private String approveSignature;//审批人的电子签名
     private String checkSignatureUrl;//审核人的电子签名 地址
     private String approveSignatureUrl;//审批人的电子签名 地址
 

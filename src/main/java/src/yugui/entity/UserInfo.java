@@ -13,7 +13,6 @@ public class UserInfo implements Serializable {
     private String realName;     //职位
     private String phone;        //电话
     private String email;        //邮箱
-    private String signature;    //电子签名
     private String signatureUrl;    //电子签名地址
 
     private Integer enable;

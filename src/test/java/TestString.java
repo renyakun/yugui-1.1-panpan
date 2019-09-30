@@ -1,19 +1,18 @@
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class TestString {
     public static void main(String[] args) {
-        OffsetDateTime time = OffsetDateTime.now();
-        System.out.println(time);
 
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        System.out.println(ts);
-
-        Date day = new Date(System.currentTimeMillis());
-        System.out.println(day);
-
-
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Calendar c = Calendar.getInstance();
+        //过去七天
+        c.setTime(new Date());
+        c.add(Calendar.DATE, - 7);
+        Date d = c.getTime();
+        String day = format.format(d);
+        System.out.println("过去七天："+day);
 
 
     }

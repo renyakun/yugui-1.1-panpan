@@ -3,9 +3,11 @@ package src.yugui.util;
 import org.springframework.util.StringUtils;
 import src.yugui.common.TimeTool;
 import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
-import javax.servlet.ServletOutputStream;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
@@ -37,17 +39,39 @@ public class ConvertBase64ToImage {
             System.out.println("rootPath ------------------->" + rootPath);
             //新生成的图片
             String nowTime = TimeTool.getTime();
-            String imgFilePath = rootPath + "\\imgs\\" + nowTime + ".jpg";
+            String imgFilePath = rootPath + "/imgs/" + nowTime + ".jpg";
             System.out.println("imgFilePath ------------------->" + imgFilePath);
             OutputStream out = new FileOutputStream(imgFilePath);
             System.out.println("out ------------------->" + out);
             out.write(b);
             out.flush();
             out.close();
-            return imgFilePath;
+            return "http://120.79.181.56:8079/imgs" + imgFilePath.substring(imgFilePath.lastIndexOf("/"), imgFilePath.length());
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 将网络图片进行Base64位编码
+     *
+     * @param imageUrl
+     *            图片的url路径，如http://.....xx.jpg
+     * @return
+     */
+    public static String encodeImgageToBase64(String imageUrl) {// 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+        ByteArrayOutputStream outputStream = null;
+        try {
+            BufferedImage bufferedImage = ImageIO.read(new File(imageUrl));
+            outputStream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", outputStream);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        // 对字节数组Base64编码
+        BASE64Encoder encoder = new BASE64Encoder();
+        assert outputStream != null;
+        return encoder.encode(outputStream.toByteArray());// 返回Base64编码过的字节数组字符串
     }
 
     //将本地图片通过流取出返回给浏览器
